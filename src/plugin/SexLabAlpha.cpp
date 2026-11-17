@@ -25,12 +25,34 @@ namespace AG::SexLabAlpha
 			std::function<void(float)> _fn;
 		};
 
+		// The VM does not check that a global function exists before a static call: calling one the
+		// script lacks dereferences null and crashes. SexLab Classic has sslSystemConfig without
+		// GetSettingFlt/SetSettingFlt, so look the function up in the loaded type first.
+		bool HasGlobal(RE::BSScript::Internal::VirtualMachine* a_vm, std::string_view a_class, std::string_view a_fn)
+		{
+			RE::BSTSmartPointer<RE::BSScript::ObjectTypeInfo> type;
+			if (!a_vm->GetScriptObjectType1(RE::BSFixedString(a_class), type) || !type) {
+				return false;
+			}
+			const auto* funcs = type->GetGlobalFuncIter();
+			for (std::uint32_t i = 0; funcs && i < type->GetNumGlobalFuncs(); ++i) {
+				const auto& fn = funcs[i].func;
+				if (fn && std::string_view(fn->GetName().c_str()) == a_fn) {
+					return true;
+				}
+			}
+			return false;
+		}
+
 		void SetValue(float a_value)
 		{
 			auto* vm = RE::BSScript::Internal::VirtualMachine::GetSingleton();
+			if (!vm || !HasGlobal(vm, "sslSystemConfig", "SetSettingFlt")) {
+				return;
+			}
 			RE::BSTSmartPointer<RE::BSScript::IStackCallbackFunctor> none;
 			auto*                                                     args = RE::MakeFunctionArguments(RE::BSFixedString(kSetting), static_cast<float>(a_value));
-			if (vm && vm->DispatchStaticCall("sslSystemConfig", "SetSettingFlt", args, none)) {
+			if (vm->DispatchStaticCall("sslSystemConfig", "SetSettingFlt", args, none)) {
 				logger::info("SexLab P+ {} set to {:.2f}", kSetting, a_value);
 			}
 		}
@@ -40,6 +62,10 @@ namespace AG::SexLabAlpha
 	{
 		auto* vm = RE::BSScript::Internal::VirtualMachine::GetSingleton();
 		if (!vm) {
+			return;
+		}
+		if (!HasGlobal(vm, "sslSystemConfig", "GetSettingFlt")) {
+			logger::info("SexLab P+ not found (no sslSystemConfig.GetSettingFlt), its overlays are left alone");
 			return;
 		}
 		RE::BSTSmartPointer<RE::BSScript::IStackCallbackFunctor> cb(new OnValue([](float a_current) {
