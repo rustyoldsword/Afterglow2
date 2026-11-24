@@ -22,6 +22,7 @@ namespace AG
 		bool  hideSexLabOverlays{ true };   // P+ fCumAlpha = 0 while on
 		float sexLabAlphaBefore{ -1.0f };   // the fCumAlpha we replaced (restored when switched off)
 		int   fallbackZone{ 0 };            // untagged scene, P+ found no type: 0 vaginal 1 anal 2 oral
+		int   classicCumSpells{ -1 };       // SexLab cum spells outside a scene add a layer: -1 on SexLab Classic only, 0 never, 1 always (test)
 		std::vector<std::string> megaRaces; // race EditorIDs whose cum uses the m_ textures
 		bool  debugLog{ false };
 

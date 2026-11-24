@@ -101,6 +101,8 @@ namespace AG
 					fallbackZone = std::clamp(std::stoi(value), 0, 2);
 				} else if (key == "sMegaRaces") {
 					megaRaces = SplitList(value);
+				} else if (key == "iClassicCumSpells") {
+					classicCumSpells = std::clamp(std::stoi(value), -1, 1);
 				} else if (key == "bDebugLog") {
 					debugLog = std::stoi(value) != 0;
 				} else {
@@ -133,7 +135,7 @@ namespace AG
 		out << std::format("fOpacity = {:.2f}\nfGlossiness = {:.0f}\nfSpecular = {:.1f}\nfDryHours = {:.1f}\nfFadeSeconds = {:.1f}\niStartSlot = {}\n",
 			opacity, glossiness, specular, dryHours, fadeSeconds, startSlot);
 		out << std::format("bMaleTargets = {}\nbFollowSexLabCleanup = {}\nbWashOnBathing = {}\n", int(maleTargets), int(followSexLabCleanup), int(washOnBathing));
-		out << std::format("bHideSexLabOverlays = {}\nfSexLabAlphaBefore = {:.2f}\niFallbackZone = {}\nbDebugLog = {}\n", int(hideSexLabOverlays), sexLabAlphaBefore, fallbackZone, int(debugLog));
+		out << std::format("bHideSexLabOverlays = {}\nfSexLabAlphaBefore = {:.2f}\niFallbackZone = {}\niClassicCumSpells = {}\nbDebugLog = {}\n", int(hideSexLabOverlays), sexLabAlphaBefore, fallbackZone, classicCumSpells, int(debugLog));
 		out << "\n[Layers]\n";
 		for (std::size_t z = 0; z < kZoneCount; ++z) {
 			out << std::format("{} = {}\n", kZoneKeys[z], maxLayers[z]);

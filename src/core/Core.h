@@ -65,6 +65,20 @@ namespace AG
 	// SexLab P+ cum fx type: 0 vaginal, 1 anal, 2 oral, -1 all
 	ZoneSet ZonesForCumType(int a_type);
 
+	// SexLab Classic has no "SexLabApplyCum" event. Its AddCum/ApplyCum (Fill Her Up expelling,
+	// SexLab's own orgasm) casts one spell whose effect carries the NEW level of every type
+	// (0 none, 1, 2 = stacked); the levels the actor already had are carried over, only the
+	// requested types rise (capped at 2), and the new effect dispels the old one.
+	struct CumLevels
+	{
+		std::uint8_t vaginal{ 0 };
+		std::uint8_t anal{ 0 };
+		std::uint8_t oral{ 0 };
+	};
+	// Zones of the types one cast added: the types whose level rose. When none rose (the requested
+	// type was already at 2) and exactly one type is at 2, that one; otherwise nothing (ambiguous).
+	ZoneSet ClassicAddedZones(CumLevels a_before, CumLevels a_after);
+
 	// ------------------------------------------------------------------ who paints whom
 	// SexLab P+ sex: 0 male, 1 female, 2 futa, 3 creature male, 4 creature female
 	bool IsSource(int a_sex);
@@ -155,6 +169,8 @@ namespace AG
 		std::vector<Paint> OnOrgasm(std::uint32_t a_source, std::span<const std::uint32_t> a_targets, std::uint32_t a_tagMask, double a_now);
 		// P+ cum fx on a_target; a_tagMask = tags of the scene a_target is in (0 = none or no scene)
 		std::optional<Paint> OnApplyCum(std::uint32_t a_target, int a_type, std::uint32_t a_tagMask, double a_now);
+		// the same with the zones already known (SexLab Classic cum spells)
+		std::optional<Paint> OnCumZones(std::uint32_t a_target, ZoneSet a_zones, std::uint32_t a_tagMask, double a_now);
 		// pending untagged orgasms whose wait ran out
 		std::vector<Paint> Expire(double a_now);
 		bool               HasPending() const { return !_pending.empty(); }

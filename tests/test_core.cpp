@@ -245,3 +245,39 @@ TEST_CASE("arbiter: ApplyCum outside any orgasm (other mods, console) paints by 
 	CHECK(p->source == 0);
 	CHECK(p->zones == ZonesForCumType(-1));
 }
+
+// SexLab Classic: AddCum casts one spell carrying the new level of every type; Fill Her Up
+// expels with AddCum(actor, vaginal/oral/anal) outside any scene.
+TEST_CASE("classic cum: the type whose level rose is the one added")
+{
+	const CumLevels none{};
+	// first vaginal expel on a clean body
+	CHECK(ClassicAddedZones(none, { 1, 0, 0 }) == ZonesForCumType(0));
+	// anal on top of an existing oral: the oral level is carried over, only anal is new
+	CHECK(ClassicAddedZones({ 0, 0, 1 }, { 0, 1, 1 }) == ZonesForCumType(1));
+	// second vaginal: 1 -> 2 (stacked), the oral level stays
+	CHECK(ClassicAddedZones({ 1, 0, 1 }, { 2, 0, 1 }) == ZonesForCumType(0));
+	// oral from nothing
+	CHECK(ClassicAddedZones(none, { 0, 0, 1 }) == ZonesForCumType(2));
+}
+
+TEST_CASE("classic cum: a type already at the cap is found when it is the only one at 2")
+{
+	// vaginal again while vaginal is stacked: nothing rose, vaginal is the only type at 2
+	CHECK(ClassicAddedZones({ 2, 0, 1 }, { 2, 0, 1 }) == ZonesForCumType(0));
+	// two types at 2 and nothing rose: cannot tell which was requested, paint nothing
+	CHECK(ClassicAddedZones({ 2, 2, 0 }, { 2, 2, 0 }) == 0);
+	// nothing at all
+	CHECK(ClassicAddedZones({}, {}) == 0);
+}
+
+TEST_CASE("arbiter: zone-set cum outside a scene paints once, a repeat inside the window does not")
+{
+	Arbiter arb;
+	auto p = arb.OnCumZones(0x14, Bit(Zone::Anal), 0, 20.0);
+	REQUIRE(p.has_value());
+	CHECK(p->zones == Bit(Zone::Anal));
+	CHECK_FALSE(arb.OnCumZones(0x14, Bit(Zone::Anal), 0, 21.0).has_value());
+	CHECK(arb.OnCumZones(0x14, Bit(Zone::Anal), 0, 30.0).has_value());
+	CHECK_FALSE(arb.OnCumZones(0x14, 0, 0, 40.0).has_value());
+}

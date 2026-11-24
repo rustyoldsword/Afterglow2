@@ -11,6 +11,7 @@ namespace AG::Manager
 	// From the Papyrus bridge (any thread).
 	void OnOrgasm(RE::Actor* a_source, int a_sourceSex, const std::vector<RE::Actor*>& a_partners, const std::vector<std::int32_t>& a_sexes, std::uint32_t a_tagMask);
 	void OnApplyCum(RE::Actor* a_target, int a_type, std::uint32_t a_tagMask, int a_targetSex);
+	void OnCumZones(RE::Actor* a_target, ZoneSet a_zones, std::uint32_t a_tagMask, int a_targetSex);  // any thread
 	void OnSexLabClear(RE::Actor* a_target, int a_type);
 	void Wash(RE::Actor* a_target);  // bathing mods, console, menu
 

@@ -1,4 +1,5 @@
 #include "Body.h"
+#include "ClassicCum.h"
 #include "Manager.h"
 #include "Menu.h"
 #include "Papyrus.h"
@@ -37,11 +38,13 @@ namespace
 			break;
 		case SKSE::MessagingInterface::kDataLoaded:
 			Manager::Start();
+			ClassicCum::Register();
 			break;
 		case SKSE::MessagingInterface::kPostLoadGame:
 		case SKSE::MessagingInterface::kNewGame:
 			Body::ClearCache();
 			SexLabAlpha::Sync();
+			ClassicCum::Sync();
 			break;
 		default:
 			break;

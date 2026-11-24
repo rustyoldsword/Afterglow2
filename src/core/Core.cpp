@@ -104,6 +104,32 @@ namespace AG
 		}
 	}
 
+	ZoneSet ClassicAddedZones(CumLevels a_before, CumLevels a_after)
+	{
+		const std::array<std::pair<std::uint8_t, std::uint8_t>, 3> levels{ {
+			{ a_before.vaginal, a_after.vaginal },  // P+ type 0
+			{ a_before.anal, a_after.anal },        // 1
+			{ a_before.oral, a_after.oral },        // 2
+		} };
+		ZoneSet rose = 0;
+		ZoneSet capped = 0;
+		int     cappedCount = 0;
+		for (int type = 0; type < 3; ++type) {
+			const auto [before, after] = levels[type];
+			if (after > before) {
+				rose |= ZonesForCumType(type);
+			}
+			if (after >= 2) {
+				capped |= ZonesForCumType(type);
+				++cappedCount;
+			}
+		}
+		if (rose != 0) {
+			return rose;
+		}
+		return cappedCount == 1 ? capped : 0;
+	}
+
 	bool IsSource(int a_sex) { return a_sex == 0 || a_sex == 2 || a_sex == 3; }
 
 	bool IsTarget(int a_sex, bool a_allowMaleTargets)
@@ -362,10 +388,15 @@ namespace AG
 
 	std::optional<Arbiter::Paint> Arbiter::OnApplyCum(std::uint32_t a_target, int a_type, std::uint32_t a_tagMask, double a_now)
 	{
+		return OnCumZones(a_target, ZonesForCumType(a_type), a_tagMask, a_now);
+	}
+
+	std::optional<Arbiter::Paint> Arbiter::OnCumZones(std::uint32_t a_target, ZoneSet a_zones, std::uint32_t a_tagMask, double a_now)
+	{
 		if (a_tagMask != 0) {
 			return std::nullopt;  // the scene has cum tags: its orgasm paints (with hands/feet/breast)
 		}
-		const ZoneSet zones = ZonesForCumType(a_type);
+		const ZoneSet zones = a_zones;
 		if (zones == 0) {
 			return std::nullopt;
 		}

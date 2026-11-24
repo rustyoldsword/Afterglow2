@@ -442,15 +442,20 @@ namespace AG::Manager
 
 	void OnApplyCum(RE::Actor* a_target, int a_type, std::uint32_t a_tagMask, int a_targetSex)
 	{
+		OnCumZones(a_target, ZonesForCumType(a_type), a_tagMask, a_targetSex);
+	}
+
+	void OnCumZones(RE::Actor* a_target, ZoneSet a_zones, std::uint32_t a_tagMask, int a_targetSex)
+	{
 		if (g_blocked || !a_target || !IsTarget(a_targetSex, Settings::Get().maleTargets)) {
 			return;
 		}
 		std::optional<Arbiter::Paint> paint;
 		{
 			std::scoped_lock l(g_lock);
-			paint = g_arbiter.OnApplyCum(a_target->GetFormID(), a_type, a_tagMask, RealNow());
+			paint = g_arbiter.OnCumZones(a_target->GetFormID(), a_zones, a_tagMask, RealNow());
 		}
-		logger::debug("SexLab cum type {} on {}, tags {:#x}: {}", a_type, Name(a_target), a_tagMask, paint ? "painting" : "left to the orgasm/tags");
+		logger::debug("SexLab cum zones {:#x} on {}, tags {:#x}: {}", a_zones, Name(a_target), a_tagMask, paint ? "painting" : "left to the orgasm/tags");
 		if (paint) {
 			Queue([p = *paint]() { PaintNow(p.target, p.source, p.zones); });
 		}

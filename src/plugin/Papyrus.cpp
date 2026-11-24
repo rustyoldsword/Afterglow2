@@ -34,7 +34,7 @@ namespace AG::Papyrus
 
 		void OnGameLoaded(RE::StaticFunctionTag*) { SexLabAlpha::Sync(); }
 
-		std::int32_t GetVersion(RE::StaticFunctionTag*) { return 20001; }
+		std::int32_t GetVersion(RE::StaticFunctionTag*) { return 20002; }
 
 		bool Register(RE::BSScript::IVirtualMachine* a_vm)
 		{

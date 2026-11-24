@@ -58,6 +58,20 @@ namespace AG::SexLabAlpha
 		}
 	}
 
+	Kind Detect()
+	{
+		auto* dh = RE::TESDataHandler::GetSingleton();
+		auto* vm = RE::BSScript::Internal::VirtualMachine::GetSingleton();
+		if (!dh || !vm || !dh->LookupLoadedModByName("SexLab.esm")) {
+			return Kind::None;
+		}
+		RE::BSTSmartPointer<RE::BSScript::ObjectTypeInfo> type;
+		if (!vm->GetScriptObjectType1(RE::BSFixedString("sslSystemConfig"), type) || !type) {
+			return Kind::None;
+		}
+		return HasGlobal(vm, "sslSystemConfig", "GetSettingFlt") ? Kind::Plus : Kind::Classic;
+	}
+
 	void Sync()
 	{
 		auto* vm = RE::BSScript::Internal::VirtualMachine::GetSingleton();
