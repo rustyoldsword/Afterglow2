@@ -19,6 +19,7 @@ namespace AG
 		bool  maleTargets{ false };
 		bool  followSexLabCleanup{ false };  // owner 16.11: Afterglow's own drying timer for every zone; on = P+ "SexLabClearCum" also clears
 		bool  washOnBathing{ true };        // Bathing in Skyrim / Dirt and Blood
+		bool  washOnSwimming{ true };       // swimming (also underwater) removes every layer; checked every 2 s
 		bool  hideSexLabOverlays{ true };   // P+ fCumAlpha = 0 while on
 		float sexLabAlphaBefore{ -1.0f };   // the fCumAlpha we replaced (restored when switched off)
 		int   fallbackZone{ 0 };            // untagged scene, P+ found no type: 0 vaginal 1 anal 2 oral

@@ -85,6 +85,7 @@ namespace AG::Menu
 			Toggle("Male targets", s.maleTargets, "Men can receive cum layers too (by default only women, futa and female creatures).");
 			Toggle("Follow SexLab cleanup", s.followSexLabCleanup, "Off (default): every zone dries on Afterglow's own timer above. On: when SexLab P+ removes its own cum (swimming, its fCumTimer), Afterglow also removes that zone - SexLab only knows vaginal, anal and oral, so breast, hands and feet still use Afterglow's timer.");
 			Toggle("Wash with Bathing in Skyrim / Dirt and Blood", s.washOnBathing);
+			Toggle("Wash when swimming", s.washOnSwimming, "An actor with Afterglow layers who swims (on the surface or underwater) loses every layer within about 2 seconds. Wading or standing in water does not count - use Bathing in Skyrim for that.");
 			bool hide = s.hideSexLabOverlays;
 			if (ImGuiMCP::Checkbox("Hide SexLab P+'s own cum overlays", std::addressof(hide))) {
 				s.hideSexLabOverlays = hide;

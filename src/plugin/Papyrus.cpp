@@ -30,11 +30,20 @@ namespace AG::Papyrus
 			}
 		}
 
+		// Afterglow_PlayerAlias registered the washing events (new game and every load). The alias names
+		// no SexLab type, so this line also shows up under OStim alone.
+		void OnBathingListener(RE::StaticFunctionTag*, bool a_bathingInSkyrim, bool a_dirtAndBlood)
+		{
+			logger::info("bathing listener ready: Bathing in Skyrim {}, Dirt and Blood {}, wash {}",
+				a_bathingInSkyrim ? "found" : "not found", a_dirtAndBlood ? "found" : "not found",
+				Settings::Get().washOnBathing ? "on" : "off");
+		}
+
 		void Clear(RE::StaticFunctionTag*, RE::Actor* a_target) { Manager::Wash(a_target); }
 
 		void OnGameLoaded(RE::StaticFunctionTag*) { SexLabAlpha::Sync(); }
 
-		std::int32_t GetVersion(RE::StaticFunctionTag*) { return 20002; }
+		std::int32_t GetVersion(RE::StaticFunctionTag*) { return 20003; }
 
 		bool Register(RE::BSScript::IVirtualMachine* a_vm)
 		{
@@ -42,6 +51,7 @@ namespace AG::Papyrus
 			a_vm->RegisterFunction("OnApplyCum", kClass, OnApplyCum);
 			a_vm->RegisterFunction("OnSexLabClear", kClass, OnSexLabClear);
 			a_vm->RegisterFunction("OnWashed", kClass, OnWashed);
+			a_vm->RegisterFunction("OnBathingListener", kClass, OnBathingListener);
 			a_vm->RegisterFunction("Clear", kClass, Clear);
 			a_vm->RegisterFunction("OnGameLoaded", kClass, OnGameLoaded);
 			a_vm->RegisterFunction("GetVersion", kClass, GetVersion);

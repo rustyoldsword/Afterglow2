@@ -20,7 +20,10 @@ namespace AG::Skee
 		constexpr std::uint16_t kKeySpecular = 3;
 		constexpr std::uint16_t kKeyAlpha = 8;
 		constexpr std::uint16_t kKeyTexture = 9;
-		constexpr auto          kDefaultTexture = "actors\\character\\overlays\\default.dds";
+		// The blank RaceMenu itself puts in a free slot - with the "textures\" prefix. Without it SKEE still shows the slot,
+		// but a mod that reloads the slot's texture set (Drench gives a borrowed slot back that way) gets a missing
+		// texture: the whole body turned purple after swimming (2026-11-25).
+		constexpr auto          kDefaultTexture = "textures\\Actors\\character\\overlays\\default.dds";
 
 		class SetString : public IOverrideInterface::SetVariant
 		{

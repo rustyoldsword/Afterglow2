@@ -243,6 +243,30 @@ namespace AG::Manager
 			}
 		}
 
+		// Swimming washes like a bath (OCum does the same). Bathing in Skyrim sends no wash event when the
+		// actor bathes while swimming or underwater (it skips the animation), so this also covers that case.
+		void SwimNow()
+		{
+			if (!Settings::Get().washOnSwimming) {
+				return;
+			}
+			std::vector<RE::FormID> ids;
+			{
+				std::scoped_lock l(g_lock);
+				ids.reserve(g_states.size());
+				for (const auto& [id, st] : g_states) {
+					ids.push_back(id);
+				}
+			}
+			for (auto id : ids) {
+				auto*       actor = RE::TESForm::LookupByID<RE::Actor>(id);
+				const auto* state = actor && actor->Is3DLoaded() ? actor->AsActorState() : nullptr;
+				if (state && state->IsSwimming()) {
+					RemoveNow(id, ~ZoneSet{ 0 }, "swimming");
+				}
+			}
+		}
+
 		// Mu Dynamic NormalMap guard. The NoDynamicNormalMap mark lives on the overlay 3D, which SKEE rebuilds
 		// (armor swap, cell load, save load) and Mu then covers with its skin map again. Every pass: re-mark loaded
 		// slots that lost it, and for a few seconds after re-marking put our normal back (a Mu update queued
@@ -366,6 +390,7 @@ namespace AG::Manager
 							DryNow();
 						}
 						if (guard) {
+							SwimNow();
 							GuardNow(t);
 						}
 					});

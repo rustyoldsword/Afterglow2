@@ -93,6 +93,8 @@ namespace AG
 					followSexLabCleanup = std::stoi(value) != 0;
 				} else if (key == "bWashOnBathing") {
 					washOnBathing = std::stoi(value) != 0;
+				} else if (key == "bWashOnSwimming") {
+					washOnSwimming = std::stoi(value) != 0;
 				} else if (key == "bHideSexLabOverlays") {
 					hideSexLabOverlays = std::stoi(value) != 0;
 				} else if (key == "fSexLabAlphaBefore") {
@@ -116,8 +118,8 @@ namespace AG
 				logger::warn("settings: bad value for {}: '{}'", key, value);
 			}
 		}
-		logger::info("settings loaded: opacity {:.2f}, gloss {:.0f}, specular {:.1f}, dry {:.1f} h, fade {:.1f} s, start slot {}, male targets {}, hide P+ overlays {}",
-			opacity, glossiness, specular, dryHours, fadeSeconds, startSlot, maleTargets, hideSexLabOverlays);
+		logger::info("settings loaded: opacity {:.2f}, gloss {:.0f}, specular {:.1f}, dry {:.1f} h, fade {:.1f} s, start slot {}, male targets {}, hide P+ overlays {}, wash on bathing {}, on swimming {}",
+			opacity, glossiness, specular, dryHours, fadeSeconds, startSlot, maleTargets, hideSexLabOverlays, washOnBathing, washOnSwimming);
 	}
 
 	void Settings::Save() const
@@ -134,7 +136,7 @@ namespace AG
 		out << "; Afterglow 2.0 - written by the SKSE Menu Framework page\n[General]\n";
 		out << std::format("fOpacity = {:.2f}\nfGlossiness = {:.0f}\nfSpecular = {:.1f}\nfDryHours = {:.1f}\nfFadeSeconds = {:.1f}\niStartSlot = {}\n",
 			opacity, glossiness, specular, dryHours, fadeSeconds, startSlot);
-		out << std::format("bMaleTargets = {}\nbFollowSexLabCleanup = {}\nbWashOnBathing = {}\n", int(maleTargets), int(followSexLabCleanup), int(washOnBathing));
+		out << std::format("bMaleTargets = {}\nbFollowSexLabCleanup = {}\nbWashOnBathing = {}\nbWashOnSwimming = {}\n", int(maleTargets), int(followSexLabCleanup), int(washOnBathing), int(washOnSwimming));
 		out << std::format("bHideSexLabOverlays = {}\nfSexLabAlphaBefore = {:.2f}\niFallbackZone = {}\niClassicCumSpells = {}\nbDebugLog = {}\n", int(hideSexLabOverlays), sexLabAlphaBefore, fallbackZone, classicCumSpells, int(debugLog));
 		out << "\n[Layers]\n";
 		for (std::size_t z = 0; z < kZoneCount; ++z) {

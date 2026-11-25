@@ -15,6 +15,9 @@ Function OnSexLabClear(Actor akTarget, Int aiType) global native
 ; Bathing in Skyrim / Dirt and Blood finished washing the actor.
 Function OnWashed(Actor akTarget) global native
 
+; The washing listener (Afterglow_PlayerAlias) registered; only writes a line to Afterglow.log.
+Function OnBathingListener(Bool abBathingInSkyrim, Bool abDirtAndBlood) global native
+
 ; Removes every Afterglow layer from the actor (for other mods).
 Function Clear(Actor akTarget) global native
 

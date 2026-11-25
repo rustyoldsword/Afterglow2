@@ -12,7 +12,12 @@ Event OnInit()
 	Maintenance()
 EndEvent
 
-; also called by Afterglow_PlayerAlias.OnPlayerLoadGame
+; after every load (Afterglow_PlayerAlias sends "Afterglow_GameLoaded" to this quest)
+Event OnAfterglowGameLoaded(String asEventName, String asStrArg, Float afNumArg, Form akSender)
+	Maintenance()
+EndEvent
+
+; washing (Bathing in Skyrim / Dirt and Blood) is heard by Afterglow_PlayerAlias, which links without SexLab
 Function Maintenance()
 	SexLab = None
 	IsPlus = False
@@ -24,9 +29,10 @@ Function Maintenance()
 	RegisterForModEvent("SexLabOrgasm", "OnSexLabOrgasm")
 	RegisterForModEvent("SexLabApplyCum", "OnSexLabApplyCum")
 	RegisterForModEvent("SexLabClearCum", "OnSexLabClearCum")
-	RegisterForModEvent("BiS_CleanActorDirt", "OnBiSClean")
-	RegisterForModEvent("BiS_WashActorFinish", "OnBiSWashFinish")
-	RegisterForModEvent("DnB_CleanActorDirt", "OnDnBClean")
+	; saves from 2.0.2 and older: the wash events moved to the player alias, drop the quest's copy
+	UnregisterForModEvent("BiS_CleanActorDirt")
+	UnregisterForModEvent("BiS_WashActorFinish")
+	UnregisterForModEvent("DnB_CleanActorDirt")
 	Afterglow.OnGameLoaded()
 EndFunction
 
@@ -76,18 +82,6 @@ Event OnSexLabClearCum(Form akActor, Int aiType)
 	If target
 		Afterglow.OnSexLabClear(target, aiType)
 	EndIf
-EndEvent
-
-Event OnBiSClean(Form akTarget, Float afTimeToClean, Float afInterval, Bool abUsedSoap)
-	Afterglow.OnWashed(akTarget as Actor)
-EndEvent
-
-Event OnBiSWashFinish(Form akBathingActor, Form akWashProp, Bool abUsingSoap)
-	Afterglow.OnWashed(akBathingActor as Actor)
-EndEvent
-
-Event OnDnBClean(Form akTarget)
-	Afterglow.OnWashed(akTarget as Actor)
 EndEvent
 
 ; Afterglow sex codes = P+ ones: 0 male, 1 female, 2 futa, 3 creature male, 4 creature female, -1 none
